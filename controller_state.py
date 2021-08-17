@@ -1,9 +1,15 @@
 class ControllerState():
+    class Button():
+        def __init__(self):
+            self.state = "up"
     class JoyStick():
         def __init__(self):
             self.x = 0
             self.y = 0
-    class trigger():
+        def zero(self):
+            self.x = 0
+            self.y = 0
+    class Trigger():
         def __init__(self, shift=True):
             """ values from -(2**(16-1)) to (2**(16-1)-1) -> [-32768, 32767]
                 this represents full released to full press respectively
@@ -29,6 +35,9 @@ class ControllerState():
     def __init__(self):
         self.right_stick = self.JoyStick()
         self.left_stick = self.JoyStick()
-        self.right_trigger = self.trigger()
-        self.left_trigger = self.trigger()
-        
+        self.right_trigger = self.Trigger()
+        self.left_trigger = self.Trigger()
+        self.square = self.Button()
+    def zero_sticks(self):
+        self.right_stick.zero()
+        self.left_stick.zero()

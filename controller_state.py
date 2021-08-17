@@ -11,10 +11,10 @@ class ControllerState():
             self.y = 0
     class Trigger():
         def __init__(self, shift=True):
-            """ values from -(2**(16-1)) to (2**(16-1)-1) -> [-32768, 32767]
+            """ values from -(2**(16-1)) to (2**(16-1)-1) -> [-32768, 32767] (16 bit signed integer)
                 this represents full released to full press respectively
                 need to shift into [0, 65535]
-                we should take all values and add 32768
+                we should take all values and subtract -32768
             """
             self.MIN = -(2**(16-1))
             if shift:

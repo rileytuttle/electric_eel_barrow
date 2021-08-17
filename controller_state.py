@@ -39,5 +39,10 @@ class ControllerState():
         self.left_trigger = self.Trigger()
         self.square = self.Button()
     def zero_sticks(self):
+        """ sometimes the sticks can be stuck away from their real value
+            I think because the pyPS4Controller module misses some events
+            if they are too fast. for instance if the events are in too
+            quick of a succession
+        """
         self.right_stick.zero()
         self.left_stick.zero()

@@ -32,4 +32,5 @@ while True:
     # print(f'right trigger: {cs.right_trigger.value}')
     # print(f'left trigger: {cs.left_trigger.value}')
     robot.process_controller_input(cs)
+    robot.print_vels()
     sleep(update_rate)

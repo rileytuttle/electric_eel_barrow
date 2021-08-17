@@ -19,7 +19,7 @@ for wheel in right_wheels:
     robot.add_wheel(pin=wheel, dir="right")
 cs = ControllerState()
 
-controller = MyController(controller_state=cs, interface="/dev/input/js0", connecting_using_ds4drv=False, on_disconnect=on_disconnect)
+controller = MyController(controller_state=cs, interface="/dev/input/js0", connecting_using_ds4drv=False)
 # you can start listening before controller is paired, as long as you pair it within the timeout window
 
 # controller.listen(timeout=60)

@@ -72,9 +72,11 @@ class MyController(Controller):
         pass
 
     def on_square_press(self):
+        self.controller_state.square = "down"
         pass
 
     def on_square_release(self):
+        self.controller_state.square = "up"
         pass
 
     def on_R3_press(self):

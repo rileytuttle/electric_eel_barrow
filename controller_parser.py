@@ -52,6 +52,88 @@ class MyController(Controller):
 
     def on_L2_release(self):
         self.controller_state.left_trigger.zero()
-    
-    def on_x_press():
+
+    def on_x_press(self):
         pass
+
+    def on_x_release(self):
+        pass
+
+    def on_triangle_press(self):
+        pass
+
+    def on_triangle_release(self):
+        pass
+
+    def on_circle_press(self):
+        pass
+
+    def on_circle_release(self):
+        pass
+
+    def on_square_press(self):
+        pass
+
+    def on_square_release(self):
+        pass
+
+    def on_R3_press(self):
+        pass
+
+    def on_R3_release(self):
+        pass
+
+    def on_L3_press(self):
+        pass
+
+    def on_L3_release(self):
+        pass
+
+    def on_R1_press(self):
+        pass
+
+    def on_R1_release(self):
+        pass
+
+    def on_L1_press(self):
+        pass
+
+    def on_L1_release(self):
+        pass
+
+    def on_share_press(self):
+        pass
+
+    def on_share_release(self):
+        pass
+
+    def on_options_press(self):
+        pass
+
+    def on_options_release(self):
+        pass
+
+    def on_left_arrow_press(self):
+        pass
+
+    def on_left_right_arrow_release(self):
+        pass
+
+    def on_up_arrow_press(self):
+        pass
+
+    def on_up_down_arrow_release(self):
+        pass
+
+    def on_right_arrow_press(self):
+        pass
+
+    def on_down_arrow_press(self):
+        pass
+
+    def on_playstation_button_press(self):
+        pass
+
+    def on_playstation_button_release(self):
+        pass
+

@@ -34,5 +34,10 @@ class Robot():
         left_vel = controller_state.left_stick.x / -32768
         right_vel = controller_state.right_stick.x / -32768
         self.set_vels(left_vel, right_vel)
-        
+    def print_vels(self):
+        """ print out the left and right wheel vels
+            assuming for the moment the wheel vels are the same per side
+        """
+        print(f'left_vels: {self.left_wheels[0].vel}')
+        print(f'right_vels: {self.right_wheels[0].vel}')
 

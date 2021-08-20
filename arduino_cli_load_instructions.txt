@@ -1,0 +1,22 @@
+see https://siytek.com/arduino-cli-raspberry-pi/ for uploading arduino from cli
+
+for platform not installed error run
+arduino-cli core install arduino:avr
+
+see https://create.arduino.cc/projecthub/B45i/getting-started-with-arduino-cli-7652a5
+
+so the flow is
+    arduino-cli board list
+that will show the port (/dev/ttyACM0) or something like that
+    arduino-cli compile --fqbn arduino:avr:uno <sketch_name>
+that will compile
+then we need to upload
+    arduino-cli upload -p <port> --fqbn arduino:avr:uno <sketch_name>
+if it says I don't have permission then run as sudo
+    sudo path/to/arduino-cli upload -p <port> --fqbn arduino:avr:uno <sketch_name>
+
+path to at the moment is $HOME/electric_eel_barrow/bin/arduino-cli
+
+to see serial monitor run
+    sudo screen /dev/ttyACM0 <baud>
+then use ctrl-a ctrl-\

@@ -1,0 +1,13 @@
+sudo bluetoothctl
+agent on
+discoverable on
+pairable on
+default-agent
+
+scan on
+
+connect D0:27:88:69:58:9A // my specific controller
+
+need to make a script that automagically does this when we are not connected. or on boot up or something.
+
+use expect script and connect to anything that registers as a new wireless controller

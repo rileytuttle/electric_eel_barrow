@@ -10,11 +10,11 @@ import threading
 import pdb
 
 class Params():
-    def __init__():
+    def __init__(self):
         self.robot = Robot()
         self.left_wheels = [1]
         self.right_wheels = [0]
-        for left_pin, right_pin in zip(left_wheels, right_wheels):
+        for left_pin, right_pin in zip(self.left_wheels, self.right_wheels):
             self.robot.add_wheel(pin=left_pin, dir="left")
             self.robot.add_wheel(pin=right_pin, dir="right")
         self.controller_state = ControllerState()

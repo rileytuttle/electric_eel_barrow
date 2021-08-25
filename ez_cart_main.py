@@ -11,8 +11,8 @@ import pdb
 
 
 robot = Robot()
-left_wheels = [0, 1]
-right_wheels = [2, 3]
+left_wheels = [0]
+right_wheels = [1]
 for wheel in left_wheels:
     robot.add_wheel(pin=wheel, dir="left")
 for wheel in right_wheels:

@@ -20,7 +20,7 @@ class Params():
         self.controller_state = ControllerState()
         self.controller = MyController(controller_state=self.controller_state, interface="/dev/input/js0", connecting_using_ds4drv=False)
 
-        self.thread = thread.Thread(target=self.controller.listen)
+        self.thread = threading.Thread(target=self.controller.listen)
         self.thread.start()
         self.update_rate = 0.1
 

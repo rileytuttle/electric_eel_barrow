@@ -5,7 +5,7 @@ from time import sleep
 class Robot():
     class Wheel():
         def __init__(self, pin):
-            self.pin = 0
+            self.pin = pin
             self.vel = 0.0
             self.saber = Sabertooth("/dev/ttyACM0")
         def set_vel(self, new_vel):

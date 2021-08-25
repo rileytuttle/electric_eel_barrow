@@ -1,11 +1,16 @@
 import pdb
+from pysabertooth import Sabertooth
+from time import sleep
+
 class Robot():
     class Wheel():
         def __init__(self, pin):
             self.pin = 0
             self.vel = 0.0
+            self.saber = Sabertooth("/dev/ttyACM0")
         def set_vel(self, new_vel):
             self.vel = new_vel
+            self.saber.drive(self.pin, new_vel * 100)
     def __init__(self):
         self.left_wheels = []
         self.right_wheels = []

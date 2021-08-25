@@ -9,30 +9,45 @@ import threading
 
 import pdb
 
+class Params():
+    def __init__():
+        self.robot = Robot()
+        self.left_wheels = [1]
+        self.right_wheels = [0]
+        for left_pin, right_pin in zip(left_wheels, right_wheels):
+            self.robot.add_wheel(pin=left_pin, dir="left")
+            self.robot.add_wheel(pin=right_pin, dir="right")
+        self.controller_state = ControllerState()
+        self.controller = MyController(controller_state=self.controller_state, interface="/dev/input/js0", connecting_using_ds4drv=False)
 
-robot = Robot()
-left_wheels = [0]
-right_wheels = [1]
-for wheel in left_wheels:
-    robot.add_wheel(pin=wheel, dir="left")
-for wheel in right_wheels:
-    robot.add_wheel(pin=wheel, dir="right")
-cs = ControllerState()
+        self.thread = thread.Thread(target=self.controller.listen)
+        self.thread.start()
+        self.update_rate = 0.1
 
-controller = MyController(controller_state=cs, interface="/dev/input/js0", connecting_using_ds4drv=False)
-# you can start listening before controller is paired, as long as you pair it within the timeout window
+def try_to_reconnect(params):
+    while not params.controller.is_connected:
+        params.controller_state = ControllerState()
+        params.controller = MyController(controller_state=params.controller_state, interface="/dev/input/js0", connecting_using_ds4drv=False)
+        print(f'trying to reconnect to /dev/input/js0')
+        sleep(1)
 
-# controller.listen(timeout=60)
+def setup():
+    params = Params()
+    return params
 
-t = threading.Thread(target=controller.listen)
-t.start()
-update_rate = 1
+def main(params):
+    while True:
+        # print(f'right stick x,y: ({cs.right_stick.x},{cs.right_stick.y}) ')
+        # print(f'left stick x,y: ({cs.left_stick.x},{cs.left_stick.y}) ')
+        # print(f'right trigger: {cs.right_trigger.value}')
+        # print(f'left trigger: {cs.left_trigger.value}')
+        #
+        if not params.controller.is_connected:
+            try_to_reconnect(params)
+        params.robot.process_controller_input(params.controller_state)
+        params.robot.print_vels()
+        sleep(params.update_rate)
 
-while True:
-    # print(f'right stick x,y: ({cs.right_stick.x},{cs.right_stick.y}) ')
-    # print(f'left stick x,y: ({cs.left_stick.x},{cs.left_stick.y}) ')
-    # print(f'right trigger: {cs.right_trigger.value}')
-    # print(f'left trigger: {cs.left_trigger.value}')
-    robot.process_controller_input(cs)
-    robot.print_vels()
-    sleep(update_rate)
+if __name__ == "__main__":
+    params = setup()
+    main(params)

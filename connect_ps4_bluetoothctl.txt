@@ -1,13 +1,48 @@
-sudo bluetoothctl
-agent on
-discoverable on
-pairable on
-default-agent
+    sudo bluetoothctl
+    agent on
+    discoverable on
+    pairable on
+    default-agent
 
-scan on
+    scan on
 
-connect D0:27:88:69:58:9A // my specific controller
+    connect D0:27:88:69:58:9A // my specific controller
+
+
+possibly will need to remove the controller first
+
+    remove D0:27:88:69:58:9A
 
 need to make a script that automagically does this when we are not connected. or on boot up or something.
 
 use expect script and connect to anything that registers as a new wireless controller
+
+
+if ps4 controller connecting and then disconnecting follow these instructions
+https://raspberrypi.stackexchange.com/questions/122429/raspberry-pi-4-wont-pair-to-bluetooth-devices/123914#123914
+
+go to /lib/systemd/system/bluetooth.service
+
+change the following lines
+    ExecStart=/usr/lib/bluetooth/bluetoothd
+to
+    ExecStart=/usr/lib/bluetooth/bluetoothd --noplugin=sap
+
+then go to /lib/systemd/system/bthelper@.service
+
+replace
+
+    [Service]
+    Type=simple
+    ExecStart=/usr/bin/bthelper %I
+
+NOTE: mine used to be Type=oneshot
+with 
+
+    [Service]
+    Type=simple
+    ExecStartPre=/bin/sleep 2
+    ExecStart=/usr/bin/bthelper %I
+    ExecStartPost=sudo /etc/init.d/bluetooth restart
+
+then reboot and going through the bluetoothctl steps should work

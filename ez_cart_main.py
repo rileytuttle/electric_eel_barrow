@@ -42,8 +42,6 @@ def main(params):
         # print(f'right trigger: {cs.right_trigger.value}')
         # print(f'left trigger: {cs.left_trigger.value}')
         #
-        if not params.controller.is_connected:
-            try_to_reconnect(params)
         params.robot.process_controller_input(params.controller_state)
         params.robot.print_vels()
         sleep(params.update_rate)

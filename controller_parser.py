@@ -169,16 +169,16 @@ class MyController(Controller):
         pass
 
     def on_R1_press(self):
-        pass
+        self.controller_state.r1 = "down"
 
     def on_R1_release(self):
-        pass
+        self.controller_state.r1 = "up"
 
     def on_L1_press(self):
-        pass
+        self.controller_state.l1 = "down"
 
     def on_L1_release(self):
-        pass
+        self.controller_state.l1 = "up"
 
     def on_share_press(self):
         pass

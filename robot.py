@@ -3,33 +3,29 @@ from pysabertooth import Sabertooth
 
 class Robot():
     class Wheel():
-        def __init__(self, pin):
+        def __init__(self, pin, wheel_controller):
             self.pin = pin
             self.vel = 0.0
-            self.saber = Sabertooth("/dev/ttyACM0")
+            self.wheel_controller = wheel_controller
         def set_vel(self, new_vel):
             self.vel = new_vel
-            self.saber.drive(self.pin, new_vel)
+            self.wheel_controller.drive(self.pin, new_vel)
     def __init__(self):
-        self.left_wheels = []
-        self.right_wheels = []
+        self.wheels = {"left": [], "right", []}
         self.vel_multiplier = 50
+        self.wheel_controller = Sabertooth("/dev/ttyACM0")
     def add_wheel(self, dir, pin=None):
         """ add a wheel to the wheel lists
             requires a pin that will control the wheel
         """
-        if dir == "left":
-            self.left_wheels.append(self.Wheel(pin))
-        elif dir == "right":
-            self.right_wheels.append(self.Wheel(pin))
-        else:
+        try:
+            self.wheels[dir].append(self.Wheel(pin, self.wheel_controller))
+        except ValueError as ve:
             raise ValueError("invalid wheel side")
     def set_vels(self, left_vel, right_vel):
-        # print(f'new left vel {left_vel}')
-        # print(f'new right vel {right_vel}')
-        for wheel in self.left_wheels:
+        for wheel in self.wheels["left"]:
             wheel.set_vel(left_vel)
-        for wheel in self.right_wheels:
+        for wheel in self.wheels["right"]:
             wheel.set_vel(right_vel)
 
     def process_controller_input(self, controller_state):
@@ -56,6 +52,6 @@ class Robot():
         """ print out the left and right wheel vels
             assuming for the moment the wheel vels are the same per side
         """
-        print(f'left_vels: {self.left_wheels[0].vel}')
-        print(f'right_vels: {self.right_wheels[0].vel}')
+        print(f'left_vels: {self.wheels["left"][0].vel}')
+        print(f'right_vels: {self.wheels["right"][0].vel}')
 

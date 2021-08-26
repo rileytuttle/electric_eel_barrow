@@ -20,11 +20,11 @@ class Params():
         self.controller_state = ControllerState()
         self.controller = MyController(controller_state=self.controller_state, interface="/dev/input/js0", connecting_using_ds4drv=False)
 
-        self.thread = threading.Thread(target=self.controller.listen)
+        self.thread = threading.Thread(target=self.controller.listen, kwargs={"timeout": 5})
         self.thread.start()
         self.update_rate = 0.1
 
-def try_to_reconnect(params):
+def connect_controller(params):
     while not params.controller.is_connected:
         params.controller_state = ControllerState()
         params.controller = MyController(controller_state=params.controller_state, interface="/dev/input/js0", connecting_using_ds4drv=False)
@@ -35,17 +35,25 @@ def setup():
     params = Params()
     return params
 
-def main(params):
+def runner():
+    try:
+        params = setup()
+        application(params)
+    except Exception as e:
+        # pdb.set_trace()
+        # params.thread.join()
+        # sleep(2) # sleep for 2 seconds before trying again
+        # runner()
+        pass
+        
+def application(params):
     while True:
-        # print(f'right stick x,y: ({cs.right_stick.x},{cs.right_stick.y}) ')
-        # print(f'left stick x,y: ({cs.left_stick.x},{cs.left_stick.y}) ')
-        # print(f'right trigger: {cs.right_trigger.value}')
-        # print(f'left trigger: {cs.left_trigger.value}')
-        #
+        if not params.thread.is_alive():
+            raise Exception("thread quit")
+        if params.controller.connection_failed:
+            raise Exception("controller connection failed")
         params.robot.process_controller_input(params.controller_state)
-        params.robot.print_vels()
         sleep(params.update_rate)
 
 if __name__ == "__main__":
-    params = setup()
-    main(params)
+    runner()

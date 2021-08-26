@@ -46,3 +46,7 @@ with
     ExecStartPost=sudo /etc/init.d/bluetooth restart
 
 then reboot and going through the bluetoothctl steps should work
+
+
+to see ds4 battery level
+    cat /sys/class/power_supply/sony_controller_batter...../capacity

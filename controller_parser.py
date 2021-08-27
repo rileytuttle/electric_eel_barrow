@@ -149,12 +149,10 @@ class MyController(Controller):
         pass
 
     def on_square_press(self):
-        self.controller_state.square = "down"
-        pass
+        self.controller_state.square = True
 
     def on_square_release(self):
-        self.controller_state.square = "up"
-        pass
+        self.controller_state.square = False
 
     def on_R3_press(self):
         pass
@@ -169,28 +167,28 @@ class MyController(Controller):
         pass
 
     def on_R1_press(self):
-        self.controller_state.r1 = "down"
+        self.controller_state.r1 = True
 
     def on_R1_release(self):
-        self.controller_state.r1 = "up"
+        self.controller_state.r1 = False
 
     def on_L1_press(self):
-        self.controller_state.l1 = "down"
+        self.controller_state.l1 = True
 
     def on_L1_release(self):
-        self.controller_state.l1 = "up"
+        self.controller_state.l1 = False
 
     def on_share_press(self):
-        pass
+        self.controller_state.share = True
 
     def on_share_release(self):
-        pass
+        self.controller_state.share = False
 
     def on_options_press(self):
-        pass
+        self.controller_state.options = True
 
     def on_options_release(self):
-        pass
+        self.controller_state.options = False
 
     def on_left_arrow_press(self):
         pass

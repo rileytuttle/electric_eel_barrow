@@ -1,6 +1,9 @@
 import pdb
 from pysabertooth import Sabertooth
 
+class ControllerRestart(Exception):
+    pass
+
 class Robot():
     class Wheel():
         def __init__(self, pin, wheel_controller):
@@ -38,7 +41,10 @@ class Robot():
             self.vel_multiplier = 50
         elif (controller_state.r1 == "down"):
             self.vel_multiplier = 100
-            
+
+        if controller_state.share and controller_state.options:
+            raise ControllerRestart("controller restarted ezcart")
+
         left_vel = (controller_state.left_stick.x / -32768.0) * self.vel_multiplier
         right_vel = (controller_state.right_stick.x / -32768.0) * self.vel_multiplier
         self.set_vels(left_vel, right_vel)

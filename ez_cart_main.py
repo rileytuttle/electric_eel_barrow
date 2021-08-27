@@ -5,6 +5,7 @@ from controller_parser import MyController
 from robot import Robot
 from time import sleep
 import os
+from logging_utils import log
 
 import threading
 
@@ -42,7 +43,7 @@ def connect_controller(params):
     while not params.controller.is_connected:
         params.controller_state = ControllerState()
         params.controller = MyController(controller_state=params.controller_state, interface="/dev/input/js0", connecting_using_ds4drv=False)
-        print(f'trying to reconnect to /dev/input/js0')
+        log(f'trying to reconnect to /dev/input/js0')
         sleep(1)
 
 def setup():
@@ -54,14 +55,14 @@ def runner():
         params = setup()
         application(params)
     except KeyboardInterrupt as ki:
-        print(f'{ki}')
+        log(f'{ki}')
         os._exit(os.EX_OK)
     except Exception as e:
         # pdb.set_trace()
         # params.thread.join()
         # sleep(2) # sleep for 2 seconds before trying again
         # runner()
-        print(f'runner caught exception {e}')
+        log(f'runner caught exception {e}')
         # raise Exception()
         os._exit(1)
         

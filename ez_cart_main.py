@@ -4,10 +4,14 @@ from controller_state import ControllerState
 from controller_parser import MyController
 from robot import Robot
 from time import sleep
+import os
 
 import threading
 
 import pdb
+
+class ThreadQuit(Exception):
+    pass
 
 class Params():
     def __init__(self):
@@ -24,7 +28,7 @@ class Params():
         self.thread.start()
         self.update_rate = 0.1
 
-    def get_controller():
+    def get_controller(self):
         """ get the controller
             this could be a gamepad type controller like the ds4
             it could be a bluetooth connected phone
@@ -49,20 +53,24 @@ def runner():
     try:
         params = setup()
         application(params)
+    except KeyboardInterrupt as ki:
+        print(f'{ki}')
+        os._exit(os.EX_OK)
     except Exception as e:
         # pdb.set_trace()
         # params.thread.join()
         # sleep(2) # sleep for 2 seconds before trying again
         # runner()
         print(f'runner caught exception {e}')
-        pass
+        # raise Exception()
+        os._exit(1)
         
 def application(params):
     while True:
         if not params.thread.is_alive():
-            raise Exception("thread quit")
+            raise ThreadQuit("thread quit")
         if params.controller.connection_failed:
-            raise Exception("controller connection failed")
+            raise ConnectionError("controller connection failed")
         params.robot.process_controller_input(params.controller_state)
         sleep(params.update_rate)
 

@@ -54,6 +54,7 @@ def runner():
         # params.thread.join()
         # sleep(2) # sleep for 2 seconds before trying again
         # runner()
+        print(f'runner caught exception {e}')
         pass
         
 def application(params):

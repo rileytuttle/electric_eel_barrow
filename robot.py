@@ -11,7 +11,7 @@ class Robot():
             self.vel = new_vel
             self.wheel_controller.drive(self.pin, new_vel)
     def __init__(self):
-        self.wheels = {"left": [], "right", []}
+        self.wheels = {"left": [], "right": []}
         self.vel_multiplier = 50
         self.wheel_controller = Sabertooth("/dev/ttyACM0")
     def add_wheel(self, dir, pin=None):
@@ -36,7 +36,7 @@ class Robot():
         # the events only send for a change in the state
         if (controller_state.l1 == "down"):
             self.vel_multiplier = 50
-        else if (controller_state.r1 == "down"):
+        elif (controller_state.r1 == "down"):
             self.vel_multiplier = 100
             
         left_vel = (controller_state.left_stick.x / -32768.0) * self.vel_multiplier

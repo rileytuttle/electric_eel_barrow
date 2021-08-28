@@ -55,14 +55,14 @@ def runner():
         # sleep(2) # sleep for 2 seconds before trying again
         # runner()
         pass
-        
+
 def application(params):
     while True:
         if not params.thread.is_alive():
             raise Exception("thread quit")
         if params.controller.connection_failed:
             raise Exception("controller connection failed")
-        params.robot.process_controller_input(params.controller_state)
+        params.robot.process_controller_input(params.controller_state, params.controller)
         sleep(params.update_rate)
 
 if __name__ == "__main__":

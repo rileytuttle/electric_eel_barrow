@@ -1,7 +1,9 @@
 #!/bin/bash
 
-EEB_USER=pi
-EEB_HOME=/home/pi/electric_eel_barrow
+# EEB_HOME=/home/pi/electric_eel_barrow
+# EEB_USER=pi
+EEB_HOME=/home/rileytuttle/electric_eel_barrow/
+EEB_USER=rileytuttle
 
 EXIT_CODE=1
 while [ $EXIT_CODE -ne 0 ]; do

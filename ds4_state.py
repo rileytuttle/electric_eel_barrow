@@ -1,7 +1,7 @@
-class ControllerState():
+class DS4ControllerState():
     class Button():
         def __init__(self):
-            self.state = "up"
+            self.state = False
     class JoyStick():
         def __init__(self):
             self.x = 0

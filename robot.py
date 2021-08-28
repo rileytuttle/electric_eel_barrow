@@ -1,6 +1,12 @@
 import pdb
 from pysabertooth import Sabertooth
 
+class DebugWheelController():
+    def __init__(self):
+        pass
+    def drive(self, wheel, vel):
+        pass
+
 class Robot():
     class Wheel():
         def __init__(self, pin, wheel_controller):
@@ -11,9 +17,10 @@ class Robot():
             self.vel = new_vel
             self.wheel_controller.drive(self.pin, new_vel)
     def __init__(self):
-        self.wheels = {"left": [], "right", []}
+        self.wheels = {"left": [], "right": []}
         self.vel_multiplier = 50
-        self.wheel_controller = Sabertooth("/dev/ttyACM0")
+        # self.wheel_controller = Sabertooth("/dev/ttyACM0")
+        self.wheel_controller = DebugWheelController
     def add_wheel(self, dir, pin=None):
         """ add a wheel to the wheel lists
             requires a pin that will control the wheel
@@ -23,6 +30,7 @@ class Robot():
         except ValueError as ve:
             raise ValueError("invalid wheel side")
     def zero_vels(self):
+      
         """ zero out both wheels
             for stopping situations
         """
@@ -34,30 +42,30 @@ class Robot():
         for wheel in self.wheels["right"]:
             wheel.set_vel(right_vel)
 
-    def process_controller_input(self, controller_state, controller):
+    def process_controller_input(self, controller_intent):
         """ process controller state into something that the robot can understand
             right now that is just to convert the
         """
         # stop robot if we have lost the controller
         if not controller.is_connected:
-            controller_state.zero_sticks()
             self.zero_vels()
-        elif controller_state.square == "down":
+        elif controller.intent.brake:
             """ because there can be some issues with latching the last joystick values
                 we sometimes need a specific button to hit the brakes
             """
-            controller_state.zero_sticks()
             self.zero_vels()
         else:
             # this chunk doesn't use the assumption but I am assuming that
             # the events only send for a change in the state
-            if (controller_state.l1 == "down"):
+            if controller.intent.gear == 0:
+                # first gear
                 self.vel_multiplier = 50
-            else if (controller_state.r1 == "down"):
+            elif controler.intent.gear == 1:
+                # second gear
                 self.vel_multiplier = 100
 
-            left_vel = (controller_state.left_stick.x / -32768.0) * self.vel_multiplier
-            right_vel = (controller_state.right_stick.x / -32768.0) * self.vel_multiplier
+            left_vel = controller.intent.wheel_vels["left"] * self.vel_multiplier
+            right_vel = controller.intent.wheel_vels["right"] * self.vel_multiplier
             self.set_vels(left_vel, right_vel)
     def print_vels(self):
         """ print out the left and right wheel vels

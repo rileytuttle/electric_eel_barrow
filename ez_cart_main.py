@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-from controller_state import ControllerState
-from controller_parser import MyController
+from ds4_parser import DS4Controller
 from robot import Robot
 from time import sleep
 import os
@@ -19,9 +18,7 @@ class Params():
         for left_pin, right_pin in zip(self.left_wheels, self.right_wheels):
             self.robot.add_wheel(pin=left_pin, dir="left")
             self.robot.add_wheel(pin=right_pin, dir="right")
-        self.controller_state = ControllerState()
         self.controller = self.get_controller()
-
         self.thread = threading.Thread(target=self.controller.listen, kwargs={"timeout": 5})
         self.thread.start()
         self.update_rate = 0.1
@@ -34,7 +31,8 @@ class Params():
         """
         # currently only have the ds4 controller implemented and that logic will take a bit to appropriately modularize because of the threading
         # should be fine though because in this file I only care about the controller state
-        return MyController(controller_state=self.controller_state, interface="/dev/input/js0", connecting_using_ds4drv=False)
+        # return MyController(controller_state=self.controller_state, interface="/dev/input/js0", connecting_using_ds4drv=False)
+        return DS4Controller(interface="/dev/input/js0", connecting_using_ds4drv=False)
 
 def connect_controller(params):
     while not params.controller.is_connected:
@@ -67,9 +65,7 @@ def application(params):
     while True:
         if not params.thread.is_alive():
             raise Exception("thread quit")
-        if params.controller.connection_failed:
-            raise Exception("controller connection failed")
-        params.robot.process_controller_input(params.controller_state, params.controller)
+        params.robot.process_controller_input(params.controller.intent)
         sleep(params.update_rate)
 
 if __name__ == "__main__":

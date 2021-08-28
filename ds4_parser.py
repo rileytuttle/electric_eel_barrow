@@ -1,12 +1,13 @@
 from pyPS4Controller.controller import Controller
 import os
 import time
+from ds4_state import DS4ControllerState
 
-class MyController(Controller):
-    def __init__(self, controller_state, **kwargs):
+class DS4Controller(Controller):
+    def __init__(self, **kwargs):
         Controller.__init__(self, **kwargs)
-        self.controller_state = controller_state
-        self.connection_failed = False
+        self.controller_state = DS4ControllerState()
+        self.intent = ControllerIntent()
 
     # def listen(self, timeout=30, on_connect=None, on_disconnect=None, on_sequence=None):
     #     """
@@ -84,39 +85,51 @@ class MyController(Controller):
 
     def on_R3_y_at_rest(self):
         self.controller_state.right_stick.y = 0
+        self.intent.wheel_vels["right"] = 0.0
 
     def on_R3_x_at_rest(self):
         self.controller_state.right_stick.x = 0 
+        self.intent.wheel_vels["right"] = 0.0
 
     def on_R3_up(self, amount):
         self.controller_state.right_stick.x = amount
+        self.intent.wheel_vels["right"] = amount / -32768.0
 
     def on_R3_down(self, amount):
         self.controller_state.right_stick.x = amount
+        self.intent.wheel_vels["right"] = amount / -32768.0
 
     def on_R3_right(self, amount):
         self.controller_state.right_stick.y = amount
+        self.intent.wheel_vels["right"] = amount / -32768.0
 
     def on_R3_left(self, amount):
         self.controller_state.right_stick.y = amount
+        self.intent.wheel_vels["right"] = amount / -32768.0
 
     def on_L3_y_at_rest(self):
         self.controller_state.left_stick.y = 0
+        self.intent.wheel_vels["left"] = 0.0
 
     def on_L3_x_at_rest(self):
         self.controller_state.left_stick.x = 0 
+        self.intent.wheel_vels["left"] = 0.0
 
     def on_L3_up(self, amount):
         self.controller_state.left_stick.x = amount
+        self.intent.wheel_vels["left"] = amount / -32768.0
 
     def on_L3_down(self, amount):
         self.controller_state.left_stick.x = amount
+        self.intent.wheel_vels["left"] = amount / -32768.0
 
     def on_L3_right(self, amount):
         self.controller_state.left_stick.y = amount
+        self.intent.wheel_vels["left"] = amount / -32768.0
 
     def on_L3_left(self, amount):
         self.controller_state.left_stick.y = amount
+        self.intent.wheel_vels["left"] = amount / -32768.0
 
     def on_R2_press(self, amount):
         self.controller_state.right_trigger.set(amount)
@@ -149,12 +162,12 @@ class MyController(Controller):
         pass
 
     def on_square_press(self):
-        self.controller_state.square = "down"
-        pass
+        self.controller_state.square = True
+        self.controller.intent.brake = True;
 
     def on_square_release(self):
-        self.controller_state.square = "up"
-        pass
+        self.controller_state.square = False
+        self.controller.intent.brake = False;
 
     def on_R3_press(self):
         pass
@@ -169,16 +182,18 @@ class MyController(Controller):
         pass
 
     def on_R1_press(self):
-        self.controller_state.r1 = "down"
+        self.controller_state.r1 = True
+        self.controller.intent.gear = 1
 
     def on_R1_release(self):
-        self.controller_state.r1 = "up"
+        self.controller_state.r1 = False
 
     def on_L1_press(self):
-        self.controller_state.l1 = "down"
+        self.controller_state.l1 = True
+        self.controller.intent.gear = 0
 
     def on_L1_release(self):
-        self.controller_state.l1 = "up"
+        self.controller_state.l1 = False
 
     def on_share_press(self):
         pass

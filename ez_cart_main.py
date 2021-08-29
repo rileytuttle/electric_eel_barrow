@@ -68,7 +68,8 @@ def application(params):
     while True:
         if not params.thread.is_alive():
             raise ThreadQuit("thread quit")
-        params.robot.process_controller_input(params.controller.intent)
+        params.robot.process_controller_input(params.controller)
+        params.robot.print_vels()
         sleep(params.update_rate)
 
 if __name__ == "__main__":

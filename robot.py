@@ -16,11 +16,13 @@ class Robot():
         def set_vel(self, new_vel):
             self.vel = new_vel
             self.wheel_controller.drive(self.pin, new_vel)
+        def __str__(self):
+            return f'wheel: {self.pin}, vel: {self.vel}'
     def __init__(self):
         self.wheels = {"left": [], "right": []}
         self.vel_multiplier = 50
         # self.wheel_controller = Sabertooth("/dev/ttyACM0")
-        self.wheel_controller = DebugWheelController
+        self.wheel_controller = DebugWheelController()
     def add_wheel(self, dir, pin=None):
         """ add a wheel to the wheel lists
             requires a pin that will control the wheel
@@ -29,20 +31,18 @@ class Robot():
             self.wheels[dir].append(self.Wheel(pin, self.wheel_controller))
         except ValueError as ve:
             raise ValueError("invalid wheel side")
-    def zero_vels(self):
-      
-        """ zero out both wheels
-            for stopping situations
-        """
-        set_vels(0.0, 0.0)
-
     def set_vels(self, left_vel, right_vel):
         for wheel in self.wheels["left"]:
             wheel.set_vel(left_vel)
         for wheel in self.wheels["right"]:
             wheel.set_vel(right_vel)
-
-    def process_controller_input(self, controller_intent):
+    def zero_vels(self):
+      
+        """ zero out both wheels
+            for stopping situations
+        """
+        self.set_vels(0.0, 0.0)
+    def process_controller_input(self, controller):
         """ process controller state into something that the robot can understand
             right now that is just to convert the
         """
@@ -60,7 +60,7 @@ class Robot():
             if controller.intent.gear == 0:
                 # first gear
                 self.vel_multiplier = 50
-            elif controler.intent.gear == 1:
+            elif controller.intent.gear == 1:
                 # second gear
                 self.vel_multiplier = 100
 
@@ -71,6 +71,6 @@ class Robot():
         """ print out the left and right wheel vels
             assuming for the moment the wheel vels are the same per side
         """
-        print(f'left_vels: {self.wheels["left"][0].vel}')
-        print(f'right_vels: {self.wheels["right"][0].vel}')
+        print(self.wheels['left'][0])
+        print(self.wheels['right'][0])
 

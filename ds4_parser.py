@@ -2,6 +2,7 @@ from pyPS4Controller.controller import Controller
 import os
 import time
 from ds4_state import DS4ControllerState
+from controller import ControllerIntent
 
 class DS4Controller(Controller):
     def __init__(self, **kwargs):
@@ -163,11 +164,11 @@ class DS4Controller(Controller):
 
     def on_square_press(self):
         self.controller_state.square = True
-        self.controller.intent.brake = True;
+        self.intent.brake = True;
 
     def on_square_release(self):
         self.controller_state.square = False
-        self.controller.intent.brake = False;
+        self.intent.brake = False;
 
     def on_R3_press(self):
         pass
@@ -183,14 +184,14 @@ class DS4Controller(Controller):
 
     def on_R1_press(self):
         self.controller_state.r1 = True
-        self.controller.intent.gear = 1
+        self.intent.gear = 1
 
     def on_R1_release(self):
         self.controller_state.r1 = False
 
     def on_L1_press(self):
         self.controller_state.l1 = True
-        self.controller.intent.gear = 0
+        self.intent.gear = 0
 
     def on_L1_release(self):
         self.controller_state.l1 = False

@@ -11,8 +11,7 @@ class ControllerIntent():
         brake button
         connection state
     """
-    def __init__(self, thread):
+    def __init__(self):
         self.wheel_vels = {"left": [0], "right":[0]}
         self.brake = False
         self.gear = 0
-        self.controller = DS4Controller(interface="/dev/input/js0", connecting_using_ds4drv=False)

@@ -10,6 +10,9 @@ import threading
 
 import pdb
 
+class ThreadQuit(Exception):
+    pass
+
 class Params():
     def __init__(self):
         self.robot = Robot()
@@ -23,7 +26,7 @@ class Params():
         self.thread.start()
         self.update_rate = 0.1
 
-    def get_controller():
+    def get_controller(self):
         """ get the controller
             this could be a gamepad type controller like the ds4
             it could be a bluetooth connected phone
@@ -64,7 +67,7 @@ def runner():
 def application(params):
     while True:
         if not params.thread.is_alive():
-            raise Exception("thread quit")
+            raise ThreadQuit("thread quit")
         params.robot.process_controller_input(params.controller.intent)
         sleep(params.update_rate)
 

@@ -21,8 +21,8 @@ class Robot():
     def __init__(self):
         self.wheels = {"left": [], "right": []}
         self.vel_multiplier = 50
-        # self.wheel_controller = Sabertooth("/dev/ttyACM0")
-        self.wheel_controller = DebugWheelController()
+        self.wheel_controller = Sabertooth("/dev/ttyACM0")
+        # self.wheel_controller = DebugWheelController()
     def add_wheel(self, dir, pin=None):
         """ add a wheel to the wheel lists
             requires a pin that will control the wheel

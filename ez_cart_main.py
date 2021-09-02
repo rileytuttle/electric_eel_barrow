@@ -55,14 +55,14 @@ def runner():
     except KeyboardInterrupt as ki:
         log(f'{ki}')
         os._exit(os.EX_OK)
-    except Exception as e:
+    # except Exception as e:
         # pdb.set_trace()
         # params.thread.join()
         # sleep(2) # sleep for 2 seconds before trying again
         # runner()
-        log(f'runner caught exception {e}')
+        # log(f'runner caught exception {e}')
         # raise Exception()
-        os._exit(1)
+        # os._exit(1)
         
 def application(params):
     while True:

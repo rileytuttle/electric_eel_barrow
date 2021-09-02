@@ -12,6 +12,6 @@ class ControllerIntent():
         connection state
     """
     def __init__(self):
-        self.wheel_vels = {"left": [0], "right":[0]}
+        self.wheel_vels = {"left": 0, "right": 0}
         self.brake = False
         self.gear = 0

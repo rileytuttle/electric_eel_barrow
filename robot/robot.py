@@ -42,6 +42,23 @@ class Robot():
             wheel.set_vel(left_vel)
         for wheel in self.wheels["right"]:
             wheel.set_vel(right_vel)
+    def get_motion_type(controller):
+        left_wheel = controller.intent.wheel_vels["left"]
+        right_wheel = controller.intent.wheel_vels["right"]
+        different_direction = (left_wheel * right_wheel) < 0 # if they have the same sign then multiplied will be positive. if they have different signs then the product will be negative
+        different_speeds = (left_wheel - right_wheel) != 0
+
+        if different_direction and different_speeds:
+            return "tight arc"
+        elif different_direction and not different_speeds:
+            return "turn in place"
+        elif not different_direction and different_speeds:
+            return "arc"
+        elif not different_direction and not different_speeds:
+            return "straight"
+        else:
+            raise ValueError("This shouldn't happen")
+
     def set_angles(self, angles):
         # at the moment we are assuming that there are 4 wheels set up in a skid steer arrangement
         self.wheels["left"][0] = angles["left_front"] # until some abstraction is done we are assuming that the 0 wheel is the front
@@ -52,7 +69,7 @@ class Robot():
         max_angle = 45.0
         # angles are assumed to be calculated for the left side
         # right side wheels are mirrored. so really it should be thought of as angle towards the cart and away from the cart
-        motion_type = get_motion_type(controller)
+        motion_type = self.get_motion_type(controller)
         angles = {"left_front": 0.0, "left_rear": 0.0, "right_front": 0.0, "right_rear": 0.0}
         if motion_type == "arc": # both wheels going same direction but one is faster
             # wheels should turn proportionate to the difference in the wheel speeds

@@ -29,6 +29,7 @@ class Robot():
         self.wheel_controller = Sabertooth("/dev/ttyACM0")
         # self.wheel_controller = DebugWheelController()
         self.has_turnable_wheels = has_turnable_wheels
+        self.same_speed_thresh = 0.1 # if the wheels speeds are within 10 % then we say they are same speed and shouldn't turn any wheels or anything
     def add_wheel(self, dir, pin=None):
         """ add a wheel to the wheel lists
             requires a pin that will control the wheel
@@ -46,7 +47,9 @@ class Robot():
         left_wheel = controller.intent.wheel_vels["left"]
         right_wheel = controller.intent.wheel_vels["right"]
         different_direction = (left_wheel * right_wheel) < 0 # if they have the same sign then multiplied will be positive. if they have different signs then the product will be negative
-        different_speeds = (left_wheel - right_wheel) != 0
+        # different_speeds = (left_wheel - right_wheel) != 0
+        # if the speeds are within some range of each other then they are considered same speed
+        different_speeds = abs(left_wheel - right_wheel) < self.same_speed_thresh
 
         if different_direction and different_speeds:
             return "tight arc"
@@ -83,7 +86,14 @@ class Robot():
             angle["right_rear"] = proportion * max_angle
         elif motion_type == "tight arc": # wheels going different directions different speeds
             # need to think about this one more
-            raise NotImplementedError("need to think this through and implement")
+            proportion = abs(abs(controller.intent.wheel_vels["left"]) - abs(controller.intent.wheel_vels["right"]))
+            # get rotation direction
+            rotation_direction = 1 if controller.intent.wheel_vels["left"] > 0 else -1
+            angle["left_front"] = proportion * max_angle * rotation_direction
+            angle["left_rear"] = proportion * -max_angle * rotation_direction
+            angle["right_front"] = proportion * max_angle * rotation_direction
+            angle["right_rear"] = proportion * -max_angle * rotation_direction
+            # TODO I think this might not work super well so rethink after we get angling wheels
         elif motion_type == "straight": # wheels going same speed same direction
             angle["left_front"] = 0.0
             angle["left_rear"] = 0.0

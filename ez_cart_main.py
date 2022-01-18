@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from ds4_parser import DS4Controller
-from robot import Robot
+from controller.ds4_parser import DS4Controller
+from robot.robot import Robot
 from time import sleep
 import os
-from logging_utils import log
+from logging_utils.logging_utils import log
 
 import threading
 

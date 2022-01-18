@@ -1,8 +1,8 @@
 from pyPS4Controller.controller import Controller
 import os
 import time
-from ds4_state import DS4ControllerState
-from controller import ControllerIntent
+from .ds4_state import DS4ControllerState
+from .controller import ControllerIntent
 
 class DS4Controller(Controller):
     def __init__(self, **kwargs):

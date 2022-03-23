@@ -4,8 +4,8 @@ class DS4ControllerState():
             self.state = False
     class JoyStick():
         def __init__(self):
-            self.x = 0
-            self.y = 0
+            self.x = 0.0
+            self.y = 0.0
         def zero(self):
             self.x = 0
             self.y = 0
@@ -40,6 +40,7 @@ class DS4ControllerState():
         self.square = self.Button()
         self.l1 = self.Button()
         self.r1 = self.Button()
+        self.gear = 0
     def zero_sticks(self):
         """ sometimes the sticks can be stuck away from their real value
             I think because the pyPS4Controller module misses some events

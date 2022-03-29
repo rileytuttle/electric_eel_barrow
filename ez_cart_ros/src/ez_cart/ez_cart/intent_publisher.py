@@ -1,8 +1,6 @@
 import rclpy
 from rclpy.node import Node
 
-import pdb
-
 from sensor_msgs.msg import Joy
 from .ds4_state import DS4ControllerState
 from ez_cart_interfaces.msg import Intent, WheelVels

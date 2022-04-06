@@ -1,0 +1,7 @@
+pysabertooth:
+  debian:
+    pip:
+      packages: [pysabertooth]
+  ubuntu:
+    pip:
+      packages: [pysabertooth]

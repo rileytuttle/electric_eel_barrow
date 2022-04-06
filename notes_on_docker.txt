@@ -1,4 +1,20 @@
 RUN wget -q -O - https://bootstrap.pypa.io/get-pip.py | python
 RUN python3 -m pip install pysabertooth
 
+# setup bluetooth stuff
+RUN sudo apt-get install -y \
+    bluez \
+    bluetooth \
+
 add the above to the Dockerfile and then build the docker
+
+then when the docker is good
+save it to the repo
+
+docker save -o path_to/ez_cart_ros_docker.tar <image name>
+# not sure what the image name is
+
+then I can just install docker on the new rpi and load the image
+docker load -i <image.tar_file>
+
+will probably need sudo permissions

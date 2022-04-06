@@ -8,9 +8,6 @@
 # add user to the bluetooth group
 sudo usermod -G bluetooth root
 
-# the above should be done in the docker file
-
-
 # the we set up bluetooth connection for all gamepads we know about
 # once I take the above section out I can make it loop until something is successful
 MAC_ADDRESSES=("XX:XX:XX:XX:XX:XX", "XX:XX:XX:XX:XX:XX")

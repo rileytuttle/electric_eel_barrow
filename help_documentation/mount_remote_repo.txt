@@ -1,6 +1,0 @@
-
-mkdir <some_dir>
-sshfs -o idmap=user pi@ezcart.local:/home/pi/electric_eel_barrow <some_dir>
-
-to unmount run
-fusermount -u <some_dir>

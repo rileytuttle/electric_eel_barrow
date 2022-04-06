@@ -1,0 +1,4 @@
+RUN wget -q -O - https://bootstrap.pypa.io/get-pip.py | python
+RUN python3 -m pip install pysabertooth
+
+add the above to the Dockerfile and then build the docker

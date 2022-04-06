@@ -5,13 +5,38 @@ from sensor_msgs.msg import Joy
 from .ds4_state import DS4ControllerState
 from ez_cart_interfaces.msg import Intent, WheelVels
 
+# PS4_CODE_MAP = {
+#     'ABS_X': 0,
+#     'ABS_Y': 1,
+#     'ABS_RX': 2,
+#     'ABS_Z': 3,
+#     'ABS_RZ': 4,
+#     'ABS_RY': 5,
+#     'ABS_HAT0X': 6,
+#     'ABS_HAT0Y': 7,
+#     'BTN_EAST': 0,
+#     'BTN_SOUTH': 1,
+#     'BTN_NORTH': 2,
+#     'BTN_WEST': 3,
+#     'BTN_Z': 4,
+#     'BTN_TL': 5,
+#     'BTN_TR': 6,
+#     'BTN_TL2': 7,
+#     'BTN_TR2': 8,
+#     'BTN_MODE': 9,
+#     'BTN_SELECT': 10,
+#     'BTN_START': 11,
+#     'BTN_THUMBL': 12,
+#     'BTN_THUMBR': 13
+# }
+
 PS4_CODE_MAP = {
     'ABS_X': 0,
     'ABS_Y': 1,
-    'ABS_RX': 2,
-    'ABS_Z': 3,
-    'ABS_RZ': 4,
-    'ABS_RY': 5,
+    'ABS_Z': 2,
+    'ABS_RX': 3,
+    'ABS_RY': 4,
+    'ABS_RZ': 5,
     'ABS_HAT0X': 6,
     'ABS_HAT0Y': 7,
     'BTN_EAST': 0,

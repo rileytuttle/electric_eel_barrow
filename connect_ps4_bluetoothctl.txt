@@ -50,3 +50,11 @@ then reboot and going through the bluetoothctl steps should work
 
 to see ds4 battery level
     cat /sys/class/power_supply/sony_controller_batter...../capacity
+
+in docker
+    make sure to start the dbus
+        >> /etc/init.d/dbus start
+    and start the bluetooth daemon
+        >> /usr/lib/bluetooth/bluetoothd --debug &
+    make sure to add root user to the bluetooth group
+        >> sudo usermod -G bluetooth root

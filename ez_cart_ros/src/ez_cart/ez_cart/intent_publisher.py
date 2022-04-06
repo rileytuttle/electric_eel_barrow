@@ -5,31 +5,6 @@ from sensor_msgs.msg import Joy
 from .ds4_state import DS4ControllerState
 from ez_cart_interfaces.msg import Intent, WheelVels
 
-# PS4_CODE_MAP = {
-#     'ABS_X': 0,
-#     'ABS_Y': 1,
-#     'ABS_RX': 2,
-#     'ABS_Z': 3,
-#     'ABS_RZ': 4,
-#     'ABS_RY': 5,
-#     'ABS_HAT0X': 6,
-#     'ABS_HAT0Y': 7,
-#     'BTN_EAST': 0,
-#     'BTN_SOUTH': 1,
-#     'BTN_NORTH': 2,
-#     'BTN_WEST': 3,
-#     'BTN_Z': 4,
-#     'BTN_TL': 5,
-#     'BTN_TR': 6,
-#     'BTN_TL2': 7,
-#     'BTN_TR2': 8,
-#     'BTN_MODE': 9,
-#     'BTN_SELECT': 10,
-#     'BTN_START': 11,
-#     'BTN_THUMBL': 12,
-#     'BTN_THUMBR': 13
-# }
-
 PS4_CODE_MAP = {
     'ABS_X': 0,
     'ABS_Y': 1,
@@ -88,9 +63,13 @@ class IntentPublisher(Node):
         self.controller_state.r1.state = True if msg.buttons[PS4_CODE_MAP['BTN_TR']] != 0 else False
         self.controller_state.square.state = True if msg.buttons[PS4_CODE_MAP['BTN_WEST']] != 0 else False
         if msg.buttons[PS4_CODE_MAP['BTN_TL']]:
-            self.controller_state.gear = 0
+            self.controller_state.gear -= 1
         elif msg.buttons[PS4_CODE_MAP['BTN_TR']]:
+            self.controller_state.gear += 1
+        if self.controller_state.gear < 1:
             self.controller_state.gear = 1
+        if self.controller_state.gear > 10:
+            self.controller_state.gear = 10
 
 def main(args=None):
     rclpy.init(args=args)

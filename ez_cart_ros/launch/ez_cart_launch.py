@@ -4,8 +4,8 @@ from launch_ros.actions import Node
 def generate_launch_description():
     return LaunchDescription([
         Node(
-            package='joystick_ros2',
-            executable='joystick_ros2',
+            package='joy',
+            executable='joy_node',
         ),
         Node(
             package='ez_cart',

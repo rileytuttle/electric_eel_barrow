@@ -1,3 +1,0 @@
-[submodule "ez_cart_ros/src/joystick_ros2"]
-	path = ez_cart_ros/src/joystick_ros2
-	url = https://github.com/FurqanHabibi/joystick_ros2.git

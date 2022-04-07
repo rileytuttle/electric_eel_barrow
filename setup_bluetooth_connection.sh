@@ -2,7 +2,7 @@
 
 
 # start dbus
-/etc/init.d/dbus stat
+/etc/init.d/dbus start
 # start bluetooth daemon
 /usr/lib/bluetooth/bluetoothd
 # add user to the bluetooth group

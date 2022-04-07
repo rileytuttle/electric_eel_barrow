@@ -1,6 +1,6 @@
 #!/bin/bash
 
-/electric_eel_barrow/setup_bluetooth_connection.sh
+# /electric_eel_barrow/setup_bluetooth_connection.sh
 
 source /electric_eel_barrow/ez_cart_ros/install/setup.bash
 

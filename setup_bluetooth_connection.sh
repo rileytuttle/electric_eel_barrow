@@ -6,7 +6,7 @@ echo "starting dbus"
 /etc/init.d/dbus start
 # start bluetooth daemon
 echo "starting bluetooth daemon"
-/usr/lib/bluetooth/bluetoothd
+/usr/lib/bluetooth/bluetoothd --debug &
 # add user to the bluetooth group
 echo "adding root to group: bluetooth"
 sudo usermod -G bluetooth root

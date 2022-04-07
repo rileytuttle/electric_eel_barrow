@@ -13,12 +13,12 @@ sudo usermod -G bluetooth root
 
 # the we set up bluetooth connection for all gamepads we know about
 # once I take the above section out I can make it loop until something is successful
-MAC_ADDRESSES=("D0:27:88:69:58:9A", "XX:XX:XX:XX:XX:XX")
+# MAC_ADDRESSES=("D0:27:88:69:58:9A", "XX:XX:XX:XX:XX:XX")
 
-for mac_address in ${MAC_ADDRESSES[@]}; do
-    echo "setting up device $mac_address"
-    bluetoothctl disconnect $mac_address
-    bluetoothctl trust $mac_address
-    bluetoothctl pair $mac_address
-    bluetoothctl connect $mac_address
-done
+# for mac_address in ${MAC_ADDRESSES[@]}; do
+#     echo "setting up device $mac_address"
+#     bluetoothctl disconnect $mac_address
+#     bluetoothctl trust $mac_address
+#     bluetoothctl pair $mac_address
+#     bluetoothctl connect $mac_address
+# done

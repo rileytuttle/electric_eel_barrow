@@ -18,3 +18,12 @@ then I can just install docker on the new rpi and load the image
 docker load -i <image.tar_file>
 
 will probably need sudo permissions
+
+
+
+need to create the container only once
+>> sudo docker create --restart unless-stopped --init --privileged --name="ez_cart_docker" --device=/dev/input/js0 --mount type=bind,source=/home/pi/electric_eel_barrow,target=/electric_eel_barrow ros_docker:latest /electric_eel_barrow/start_ez_cart_ros.sh
+then you need the service to just stop and start it
+>> docker start -a ez_cart_docker
+
+may need to make sure bluetooth is all set up first. or add a restart if the joy node doesn't have a game pad after a certain amount of time

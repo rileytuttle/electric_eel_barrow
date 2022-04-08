@@ -19,7 +19,7 @@ class RobotController(Node):
             self.wheel_controller = wheel_controller
         def set_vel(self, new_vel):
             self.vel = new_vel
-            print(f'setting wheel to {new_vel}')
+            # print(f'setting wheel to {new_vel}')
             self.wheel_controller.drive(self.pin, new_vel)
         def __str__(self):
             return f'wheel: {self.pin}, vel: {self.vel}'

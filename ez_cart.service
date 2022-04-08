@@ -1,0 +1,14 @@
+[Unit]
+Description=starts_ez_cart_in_docker
+After=docker.service
+
+[Service]
+User=root
+Group=root
+ExecStart=/usr/bin/docker start -a ez_cart_docker
+ExecStop=/usr/bin/docker stop -t 2 ez_cart_docker
+Type=simple
+KillMode=mixed
+
+[Install]
+WantedBy=default.target

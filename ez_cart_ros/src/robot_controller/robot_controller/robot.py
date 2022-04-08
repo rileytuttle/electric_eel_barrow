@@ -15,13 +15,15 @@ class DebugWheelController():
 
 class RobotController(Node):
     class Wheel():
-        def __init__(self, pin, wheel_controller):
+        def __init__(self, pin, wheel_controller, flip_direction=False):
             self.pin = pin
             self.vel = 0.0
+            self.flip = flip_direction
             self.wheel_controller = wheel_controller
         def set_vel(self, new_vel):
             self.vel = new_vel
-            # print(f'setting wheel to {new_vel}')
+            if self.flip:
+                new_vel *= -1.0
             self.wheel_controller.drive(self.pin, new_vel)
         def __str__(self):
             return f'wheel: {self.pin}, vel: {self.vel}'
@@ -45,20 +47,20 @@ class RobotController(Node):
         self.left_wheels = [1]
         self.right_wheels = [0]
         for left_pin, right_pin in zip(self.left_wheels, self.right_wheels):
-            self.add_wheel(pin=left_pin, dir="left")
-            self.add_wheel(pin=right_pin, dir="right")
+            self.add_wheel(pin=left_pin, dir="left", FLIP_DIRECTION)
+            self.add_wheel(pin=right_pin, dir="right", FLIP_DIRECTION)
     def timer_callback(self):
         msg = CommandedVels()
         msg.left = [wheel.vel for wheel in self.wheels['left']]
         msg.right = [wheel.vel for wheel in self.wheels['right']]
         self.publisher.publish(msg)
 
-    def add_wheel(self, dir, pin=None):
+    def add_wheel(self, dir, pin=None, flip_direction=False):
         """ add a wheel to the wheel lists
             requires a pin that will control the wheel
         """
         try:
-            self.wheels[dir].append(self.Wheel(pin, self.wheel_controller))
+            self.wheels[dir].append(self.Wheel(pin, self.wheel_controller, flip_direction))
         except ValueError as ve:
             raise ValueError("invalid wheel side")
 
@@ -96,9 +98,6 @@ class RobotController(Node):
             # this chunk doesn't use the assumption but I am assuming that
             # the events only send for a change in the state
             vel_multiplier = self.vel_mult_interval * msg.gear
-            if FLIP_DIRECTION:
-                vel_multiplier *= -1
-
             left_vel = msg.wheel_vels.left * self.vel_multiplier
             right_vel = msg.wheel_vels.right * self.vel_multiplier
             self.set_vels(left_vel, right_vel)

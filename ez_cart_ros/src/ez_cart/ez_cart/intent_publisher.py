@@ -87,12 +87,12 @@ class IntentPublisher(Node):
         self.controller_state.square.state = True if msg.buttons[PS4_CODE_MAP['BTN_WEST']] != 0 else False
 
         # only count rising edges of shoulder buttons
-        if msg.buttons[PS4_CODE_MAP['BTN_TL']] != 0 and self.controller_state.l1.state = False:
+        if msg.buttons[PS4_CODE_MAP['BTN_TL']] != 0 and not self.controller_state.l1.state:
             self.controller_state.l1.state = True
             self.controller_state.gear -= 1
         elif msg.buttons[PS4_CODE_MAP['BTN_TL']] == 0:
             self.controller_state.l1.state = False
-        if msg.buttons[PS4_CODE_MAP['BTN_TR']] != 0 and self.controller_state.r1.state = False:
+        if msg.buttons[PS4_CODE_MAP['BTN_TR']] != 0 and not self.controller_state.r1.state:
             self.controller_state.r1.state = True
             self.controller_state.gear += 1
         elif msg.buttons[PS4_CODE_MAP['BTN_TR']] == 0:

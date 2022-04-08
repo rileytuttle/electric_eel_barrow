@@ -44,11 +44,11 @@ class RobotController(Node):
         self.wheels = {"left": [], "right": []}
         self.vel_mult_interval = 10
         self.wheel_controller = Sabertooth("/dev/ttyACM0")
-        self.left_wheels = [1]
-        self.right_wheels = [0]
+        self.left_wheels = [0]
+        self.right_wheels = [1]
         for left_pin, right_pin in zip(self.left_wheels, self.right_wheels):
-            self.add_wheel(pin=left_pin, dir="left", FLIP_DIRECTION)
-            self.add_wheel(pin=right_pin, dir="right", FLIP_DIRECTION)
+            self.add_wheel(pin=left_pin, dir="left", flip_direction=FLIP_DIRECTION)
+            self.add_wheel(pin=right_pin, dir="right", flip_direction=FLIP_DIRECTION)
     def timer_callback(self):
         msg = CommandedVels()
         msg.left = [wheel.vel for wheel in self.wheels['left']]
@@ -98,8 +98,8 @@ class RobotController(Node):
             # this chunk doesn't use the assumption but I am assuming that
             # the events only send for a change in the state
             vel_multiplier = self.vel_mult_interval * msg.gear
-            left_vel = msg.wheel_vels.left * self.vel_multiplier
-            right_vel = msg.wheel_vels.right * self.vel_multiplier
+            left_vel = msg.wheel_vels.left * vel_multiplier
+            right_vel = msg.wheel_vels.right * vel_multiplier
             self.set_vels(left_vel, right_vel)
 def main(args=None):
     rclpy.init(args=args)

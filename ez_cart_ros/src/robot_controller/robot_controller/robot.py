@@ -5,6 +5,8 @@ from pysabertooth import Sabertooth
 
 from ez_cart_interfaces.msg import Intent, WheelVels, CommandedVels
 
+FLIP_DIRECTION = True
+
 class DebugWheelController():
     def __init__(self):
         pass
@@ -39,7 +41,6 @@ class RobotController(Node):
         # setup other stuff
         self.wheels = {"left": [], "right": []}
         self.vel_mult_interval = 10
-        self.vel_multiplier = self.vel_mult_interval * 1
         self.wheel_controller = Sabertooth("/dev/ttyACM0")
         self.left_wheels = [1]
         self.right_wheels = [0]
@@ -94,7 +95,9 @@ class RobotController(Node):
         else:
             # this chunk doesn't use the assumption but I am assuming that
             # the events only send for a change in the state
-            self.vel_multiplier = self.vel_mult_interval * msg.gear
+            vel_multiplier = self.vel_mult_interval * msg.gear
+            if FLIP_DIRECTION:
+                vel_multiplier *= -1
 
             left_vel = msg.wheel_vels.left * self.vel_multiplier
             right_vel = msg.wheel_vels.right * self.vel_multiplier

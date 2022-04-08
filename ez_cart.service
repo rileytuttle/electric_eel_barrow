@@ -1,0 +1,25 @@
+#! /bin/sh
+# chkconfig: 345 99 10
+
+case "$1" in
+    start)
+        sudo bash /electric_eel_barrow/start_ros_docker_ezcart.sh
+        ;;
+    *)
+        ;;
+esac
+exit 0
+
+[Unit]
+Description=starts_ez_cart_in_docker
+After=network.target
+
+[Service]
+User=root
+ExecStart=/home/pi/electric_eel_barrow/start_ros_docker_ezcart.sh
+Type=forking
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

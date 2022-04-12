@@ -84,13 +84,19 @@ class IntentPublisher(Node):
         self.controller_state.right_stick.y = msg.axes[PS4_CODE_MAP['ABS_RY']]
         self.controller_state.left_trigger.value = msg.axes[PS4_CODE_MAP['ABS_Z']]
         self.controller_state.right_trigger.value = msg.axes[PS4_CODE_MAP['ABS_RZ']]
-        self.controller_state.l1.state = True if msg.buttons[PS4_CODE_MAP['BTN_TL']] != 0 else False
-        self.controller_state.r1.state = True if msg.buttons[PS4_CODE_MAP['BTN_TR']] != 0 else False
         self.controller_state.square.state = True if msg.buttons[PS4_CODE_MAP['BTN_WEST']] != 0 else False
-        if msg.buttons[PS4_CODE_MAP['BTN_TL']]:
+
+        # only count rising edges of shoulder buttons
+        if msg.buttons[PS4_CODE_MAP['BTN_TL']] != 0 and not self.controller_state.l1.state:
+            self.controller_state.l1.state = True
             self.controller_state.gear -= 1
-        elif msg.buttons[PS4_CODE_MAP['BTN_TR']]:
+        elif msg.buttons[PS4_CODE_MAP['BTN_TL']] == 0:
+            self.controller_state.l1.state = False
+        if msg.buttons[PS4_CODE_MAP['BTN_TR']] != 0 and not self.controller_state.r1.state:
+            self.controller_state.r1.state = True
             self.controller_state.gear += 1
+        elif msg.buttons[PS4_CODE_MAP['BTN_TR']] == 0:
+            self.controller_state.r1.state = False
         if self.controller_state.gear < 1:
             self.controller_state.gear = 1
         if self.controller_state.gear > 10:

@@ -14,5 +14,9 @@ def generate_launch_description():
         Node(
             package='robot_controller',
             executable='robot',
+        ),
+        Node(
+            package='image_tools',
+            executable='cam2image',
         )
     ])

@@ -1,0 +1,3 @@
+[submodule "ez_cart_ros/src/stella_vslam_ros"]
+	path = ez_cart_ros/src/stella_vslam_ros
+	url = https://github.com/stella-cv/stella_vslam_ros.git

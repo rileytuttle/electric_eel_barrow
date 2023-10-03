@@ -1,6 +1,7 @@
-include <BOSL2/std.scad>
-include <rosetta-stone/std.scad>
 include <BOSL2/screws.scad>
+include <BOSL2/std.scad>
+include <rosetta-stone/board.scad>
+include <rosetta-stone/std.scad>
 
 // rpi values
 rpi_size = [56, 85, 5];
@@ -36,12 +37,15 @@ module build_main_platform(anchor=CENTER, spin=0, orient=UP) {
     rpi_board_position = [40, 40+rpi_mount_hole_offset, 0];
     motor_controller_position = [0,-60,0];
     regulator_position = [-30, 40+regulator_mount_hole_v_offset_from_center, 0];
+    mount_hole_locs = get_mount_hole_locs(main_platform_mount_hole_spacing);
+    mount_hole_names = get_sequential_anchor_names("mount-hole");
     anchor_list = [
         named_anchor("rpi-standoff-center", rpi_board_position),
         named_anchor("motor-controller-center", motor_controller_position),
         named_anchor("regulator-center", regulator_position),
+        for (i = [0:3]) named_anchor(mount_hole_names[i], mount_hole_locs[i])
     ];
-    
+
     attachable(anchor=anchor, spin=spin, orient=orient, size=main_platform_size, anchors=anchor_list) {
         diff("rpi-mount-holes motor-controller-mount-holes regulator-mount-holes handle-mount-holes")
         simulated_4_hole_board(

@@ -1,13 +1,15 @@
 include <BOSL2/std.scad>
 include <BOSL2/rounding.scad>
 include <rosetta-stone/std.scad>
+include <rosetta-stone/boards.scad>
+include <BOSL2/screws.scad>
 
 // wheel dims
 wheel_diam = 180;
 axle_length = 165;
 axle_diam = 13;
 wheel_thickness = 50;
-sprocket_diam = 113;
+sprocket_diam = 113.5;
 sprocket_thickness = 3;
 sprocket_ped_length = 20;
 sprocket_ped_diam = 45;
@@ -33,7 +35,7 @@ function brake_side_bracket_dist() = wheel_thickness/2+brake_ped_length+bracket_
 strut_thickness = 15;
 strut_width = driven_side_bracket_dist()+brake_side_bracket_dist()-bracket_thickness+2*bracket_strut_aligment_pocket_depth;
 strut_height = 60;
-strut_mount_hole_dist_to_top = 5;
+strut_mount_hole_dist_to_top = 10;
 strut_mount_hole_diam = 10;
 
 
@@ -90,8 +92,8 @@ module bracket_side(anchor=CENTER, spin=0, orient=UP)
             tag("bolt-hole") {
                 for(i=[-1,1]) {
                     position(BACK)
-                    translate([i*(bracket_mount_spacing/2), +1, 0])
-                    cyl(d=10, l=20, anchor=BOTTOM, orient=FRONT);
+                    translate([i*(bracket_mount_spacing/2), 1, 0])
+                    screw_hole("1/4-20", head="none", thread="none", length=20, orient=BACK, anchor=TOP);
                 }
             }
             tag("nut-access") {
@@ -111,9 +113,9 @@ module bracket_side(anchor=CENTER, spin=0, orient=UP)
             }
             tag("strut-mount-holes") {
                 for (i=[-1, 1]) {
-                    position(BACK)
+                    position(BACK+BOTTOM)
                     translate([i*(bracket_width/2-strut_thickness/2), -strut_mount_hole_dist_to_top, 0])
-                    cyl(d=strut_mount_hole_diam, l=bracket_thickness+5, anchor = CENTER+BACK);
+                    screw_hole("1/4-20", head="hex", thread="none", length=bracket_thickness+5, anchor=TOP, orient=DOWN);
                 }
             }
             
@@ -122,19 +124,14 @@ module bracket_side(anchor=CENTER, spin=0, orient=UP)
     }
 }
 
-// module bracket_top(anchor=CENTER, spin=0, orient=UP)
-// {
-//     cube([30, bracket_width, bracket_thickness]);
-// }
-
-module bracket_strut(anchor=CENTER, spin=0, orient=UP)
+module bracket_strut(anchor=CENTER, spin=0, orient=UP, chain_port=false)
 {
     anchor_list = [
         named_anchor("mount-hole1", [-strut_width/2, strut_height/2-strut_mount_hole_dist_to_top-strut_mount_hole_diam/2, 0], orient=LEFT),
         named_anchor("mount-hole2", [strut_width/2, strut_height/2-strut_mount_hole_dist_to_top-strut_mount_hole_diam/2, 0], orient=RIGHT),
     ];
     attachable(anchor=anchor, spin=spin, orient=orient, size=[strut_width, strut_height, strut_thickness], anchors=anchor_list) {
-        diff("mount-holes wheel-cutout")
+        diff("mount-holes wheel-cutout chain-port")
         cube([strut_width, strut_height, strut_thickness], anchor=CENTER) {
             tag("wheel-cutout") {
                 position(FRONT)
@@ -144,33 +141,64 @@ module bracket_strut(anchor=CENTER, spin=0, orient=UP)
             tag("mount-holes") {
                 position(LEFT+BACK)
                 translate([-1,-strut_mount_hole_dist_to_top,0])
-                cyl(d=strut_mount_hole_diam, l=15+1, anchor=BOTTOM+BACK, orient=RIGHT);
+                screw_hole("1/4-20", thread=true, length=15, anchor=TOP, orient=LEFT);
+                // cyl(d=strut_mount_hole_diam, l=15+1, anchor=BOTTOM+BACK, orient=RIGHT);
                 position(RIGHT+BACK)
                 translate([1,-strut_mount_hole_dist_to_top,0])
-                cyl(d=strut_mount_hole_diam, l=15+1, anchor=BOTTOM+BACK, orient=LEFT);
+                screw_hole("1/4-20", thread=true, length=15, anchor=TOP, orient=RIGHT);
+                // cyl(d=strut_mount_hole_diam, l=15+1, anchor=BOTTOM+BACK, orient=LEFT);
+            }
+            if(chain_port) {
+                tag("chain-port")
+                {
+                    position(RIGHT+FRONT)
+                    translate([-7.5, -1, 0])
+                    rounded_prism(square([10, 30]), height=strut_thickness+2, anchor=RIGHT+FRONT, joint_sides=[0, 0, 3, 3]);
+                }
             }
         }
         children();
     }
 }
 
+plate_width = driven_side_bracket_dist() + brake_side_bracket_dist() + bracket_thickness+10;
+plate_height = 300;
+plate_thickness = 20;
+top_plate_size = [driven_side_bracket_dist() + brake_side_bracket_dist() + bracket_thickness + 10, 300, 20];
+plywood_thickness = 5;
+top_plate_offset = [(driven_side_bracket_dist()+brake_side_bracket_dist())/2 -brake_side_bracket_dist(), -60, plywood_thickness];
+
+
 motor_width = 70;
 motor_diam = 100;
-motor_mount_plate_thickness = 3;
 motor_axle_length = 30;
 motor_sprocket_dist = 20;
 motor_sprocket_thickness = 3;
 motor_axle_diam = 10;
 motor_sprocket_diam = 20;
-motor_mount_plate_width = 55;
-motor_mount_plate_height = 110;
-motor_mount_plate_hole_h_space = 40;
-motor_mount_plate_hole_v_space = 90;
+motor_mount_plate_size = [55, 110, 3];
+motor_mount_hole_spacing = [40, 90];
+motor_mount_hole_diam = 6.5;
+sprocket_alignment = (motor_width/2 + motor_sprocket_dist+motor_sprocket_thickness/2) - (wheel_thickness/2+sprocket_ped_length+sprocket_thickness/2);
+motor_mount_v_dist = 140;
+
+
+motor_mount_center_offset = [-top_plate_offset[0]-sprocket_alignment, -motor_mount_v_dist-top_plate_offset[1]];
+
+
+// angle between sprockets
+a = motor_diam / 2 + motor_mount_plate_size[2];
+b = bracket_square_height+bracket_triangle_height-20;
+c = motor_mount_v_dist;
+e = b - a;
+d = (e^2 + c^2)^0.5;
+f = atan(e/c) + 90;
 
 module simulated_motor(anchor=CENTER, spin=0, orient=UP) {
+    motor_mount_hole_locs = get_mount_hole_locs(motor_mount_hole_spacing);
     anchor_list = [
-        named_anchor("mount-plate", [0, 0, -(motor_diam/2 + motor_mount_plate_thickness)], orient=DOWN),
-        named_anchor("sprocket", [motor_diam/2+motor_sprocket_dist+motor_sprocket_thickness/2, 0, 0], orient=RIGHT),
+        named_anchor("mount-plate", [0, 0, -(motor_diam/2 + motor_mount_plate_size[2])], orient=DOWN),
+        named_anchor("sprocket", [motor_width/2+motor_sprocket_dist+motor_sprocket_thickness/2, 0, 0], orient=RIGHT),
     ];
     attachable(anchor=anchor, spin=spin, orient=orient, size=[motor_width, motor_diam, motor_diam], anchors=anchor_list) {
         rotate([0, 90,0])
@@ -189,22 +217,17 @@ module simulated_motor(anchor=CENTER, spin=0, orient=UP) {
             cyl(l=5, d=30, anchor=BOTTOM, orient=DOWN);
             // mount plate
             position(RIGHT)
-            cube([motor_mount_plate_width, motor_mount_plate_height, motor_mount_plate_thickness], anchor=BOTTOM, orient=RIGHT)
+            cube(motor_mount_plate_size, anchor=BOTTOM, orient=RIGHT)
                 tag("mount-holes") {
-                    for (i=[-(motor_mount_plate_hole_h_space/2), motor_mount_plate_hole_h_space/2]) {
-                        for (j=[-(motor_mount_plate_hole_v_space/2), (motor_mount_plate_hole_v_space/2)]) {
-                            translate([i, j, 0])
-                            cyl(l=motor_mount_plate_thickness+1, d=4, anchor=CENTER);
-                        }
+                    for (i=[0:3]) {
+                        translate(motor_mount_hole_locs[i])
+                        cyl(l=motor_mount_plate_size[2]+1, d=motor_mount_hole_diam, anchor=CENTER);
                     }
                 }
         }
         children();
     }
 }
-sprocket_alignment = (motor_width/2 + motor_sprocket_dist+motor_sprocket_thickness/2) - (wheel_thickness/2+sprocket_ped_length+sprocket_thickness/2);
-motor_mount_v_dist = 140;
-
 module wheel_and_bracket(anchor=CENTER, spin=0, orient=UP) {
     anchor_list = [
         named_anchor("driven-sprocket",[wheel_thickness/2+sprocket_ped_length+sprocket_thickness/2, 0, 0], orient=RIGHT),
@@ -219,7 +242,7 @@ module wheel_and_bracket(anchor=CENTER, spin=0, orient=UP) {
             position("brake_ped_top")
             bracket_side(anchor="axle-hole", orient=RIGHT, spin=90) {
                 position("strut-mount-hole1")
-                bracket_strut(anchor="mount-hole1", orient=LEFT);
+                bracket_strut(anchor="mount-hole1", orient=LEFT, chain_port=true);
             }
             position("sprocket_top")
             translate([chain_space, 0, 0])
@@ -232,51 +255,72 @@ module wheel_and_bracket(anchor=CENTER, spin=0, orient=UP) {
     }
 }
 
-plate_width = driven_side_bracket_dist() + brake_side_bracket_dist() + bracket_thickness+10;
-plate_height = 300;
-plate_thickness = 20;
 module top_plate(anchor=CENTER, spin=0, orient=UP) {
-    attachable(anchor=anchor, spin=spin,orient=orient, size=[plate_width, plate_height, plate_thickness]) {
-        cuboid([plate_width, plate_height, plate_thickness], anchor=CENTER, rounding=5, teardrop=true );
+    wheel_mount_hole_offset = [-top_plate_offset[0]+(driven_side_bracket_dist() - brake_side_bracket_dist())/2, -top_plate_offset[1]];
+    top_plate_motor_mount_hole_locs = get_mount_hole_locs(motor_mount_hole_spacing, motor_mount_center_offset);
+    wheel_mount_hole_locs = get_mount_hole_locs([brake_side_bracket_dist() + driven_side_bracket_dist(), bracket_mount_spacing], wheel_mount_hole_offset);
+    anchor_list = [
+        named_anchor("motor-mount-slot-center", [motor_mount_center_offset[0], motor_mount_center_offset[1], 0]),
+        named_anchor("wheel-mount-holes-center", [wheel_mount_hole_offset[0], wheel_mount_hole_offset[1], 0]),
+    ];
+    attachable(anchor=anchor, spin=spin,orient=orient, size=[plate_width, plate_height, plate_thickness], anchors=anchor_list) {
+        diff("motor-mount-slots wheel-mount-holes")
+        cuboid([plate_width, plate_height, plate_thickness], anchor=CENTER, rounding=5, teardrop=true ) {
+            tag("motor-mount-slots") {
+                for (i=[0:3]) {
+                    translate(top_plate_motor_mount_hole_locs[i])
+                    slot(d=motor_mount_hole_diam, spread=10, h=top_plate_size[2]+0.01, anchor=CENTER, spin=90, round_radius=3);
+                }
+            }
+            tag("wheel-mount-holes") {
+                for (i=[0:3]) {
+                    position(TOP)
+                    translate(wheel_mount_hole_locs[i])
+                    screw_hole("1/4-20", length=top_plate_size[2] + 1, head="hex", thread="none", anchor="head_top"); 
+                }
+            }
+        }
         children();
     }
 }
 
-plywood_thickness = 5;
 
-diff("motor-mount-slots wheel-mount-holes") {
+module simulated_chain(anchor=CENTER,orient=UP,spin=0) {
+    sprocket_to_sprocket_dist = d;
+    anchor_list = [
+        named_anchor("sprocket-center", [0, 0, 0]),
+    ];
+    attachable(anchor=anchor, spin=spin, orient=orient, anchors=anchor_list) {
+        difference() {
+            hull() {
+                cyl(d=motor_sprocket_diam+10,l=motor_sprocket_thickness);
+                translate([sprocket_to_sprocket_dist, 0, 0])
+                cyl(d=sprocket_diam+10, l=sprocket_thickness);
+            }
+            hull() {
+                cyl(d=motor_sprocket_diam - 10, l=motor_sprocket_thickness+5);
+                translate([sprocket_to_sprocket_dist, 0, 0])
+                cyl(d=sprocket_diam - 10, l=sprocket_thickness+5);
+            }
+        }
+        children();
+    }
+}
+
 wheel_and_bracket() {
     translate([-sprocket_alignment, -motor_mount_v_dist, 0])
     position("bracket-top")
-    simulated_motor(anchor="mount-plate", orient=DOWN, spin=180);
-    translate([(driven_side_bracket_dist()+brake_side_bracket_dist())/2 -brake_side_bracket_dist(), -60, plywood_thickness])
+    simulated_motor(anchor="mount-plate", orient=DOWN, spin=180){
+        position("sprocket")
+        color_this("grey") simulated_chain(anchor="sprocket-center", orient=RIGHT, spin=-f);
+    }
+    translate(top_plate_offset)
     position("bracket-top")
     color_this("brown")top_plate(BOTTOM);
-    tag("motor-mount-slots") {
-        for (i=[-motor_mount_plate_hole_h_space/2, motor_mount_plate_hole_h_space/2]) {
-            for (j=[-motor_mount_plate_hole_v_space/2, motor_mount_plate_hole_v_space/2]) {
-                position("mount-plate")
-                translate([i,j,plywood_thickness+plate_thickness/2])
-                slot(d=7, spread=10, h=plate_thickness+0.001, anchor=CENTER, spin=90, round_radius=3);
-            }
-        }
-    }
-    tag("wheel-mount-holes") {
-        for (i=[-bracket_mount_spacing/2, bracket_mount_spacing/2]) {
-            position("driven-side-bracket-top")
-            translate([0,i,plywood_thickness+plate_thickness/2])
-            cyl(l=plate_thickness+1, d=10,anchor=CENTER);
-        }
-        for (i=[-bracket_mount_spacing/2, bracket_mount_spacing/2]) {
-            position("brake-side-bracket-top")
-            translate([0,i,plywood_thickness+plate_thickness/2])
-            cyl(l=plate_thickness+1, d=10,anchor=CENTER);
-        }
-    }
 }
-}
-    
 
 // // fake plywood
 // translate([0, 0, bracket_square_height+bracket_triangle_height-20])
 // color_this("orange") cube([200, 600, plywood_thickness], anchor=BOTTOM);
+
+// top_plate();

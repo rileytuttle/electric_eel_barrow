@@ -41,3 +41,17 @@ plate_height = 150;
 plate_thickness = 10;
 plywood_thickness = in_to_mm(0.75);
 top_plate_v_offset = -60;
+
+// caster dims
+bearing_fill_plug_screw_name = "M7-1";
+bearing_diam = 6;
+bearing_fill_plug_screw_flat_height = 4;
+channel_bearing_diam = 6.25;
+channel_radius = 50;
+n_bearings = 49;
+
+// want this to fit through front door
+cart_width = 30 * INCH;
+cart_length = 42 * INCH;
+cart_bottom_size = [cart_width, cart_length, plywood_thickness];
+cart_side_size = [18 * INCH, cart_length, plywood_thickness];

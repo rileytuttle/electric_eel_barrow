@@ -13,15 +13,16 @@ function plate_width() = driven_side_bracket_dist() + brake_side_bracket_dist() 
 function top_plate_size() = [plate_width(), plate_height, plate_thickness];
 // function top_plate_offset() = [(driven_side_bracket_dist()+brake_side_bracket_dist())/2 -brake_side_bracket_dist(), top_plate_v_offset, plywood_thickness];
 
+function axle_x_offset_caster(caster=false) = caster ? -bracket_width/2 +10+axle_diam/2 : 0;
+
 module bracket_side(anchor=CENTER, spin=0, orient=UP, caster=false)
 {
-    axle_x_offset = caster ? -bracket_width/2 + 7+axle_diam/2 : 0;
     anchor_list = [
-        named_anchor("axle-hole", [axle_x_offset, -(bracket_top_z_dist()), bracket_thickness/2], orient=DOWN),
+        named_anchor("axle-hole", [axle_x_offset_caster(caster), -(bracket_top_z_dist()), bracket_thickness/2], orient=DOWN),
         named_anchor("mount-hole1", [-bracket_mount_spacing/2, 0, 0], orient=BACK),
         named_anchor("mount-hole2", [bracket_mount_spacing/2, 0, 0], orient=BACK),
-        named_anchor("strut-mount-hole1", [-(bracket_width/2-strut_thickness/2), -(strut_mount_hole_dist_to_top+strut_mount_hole_diam/2), bracket_thickness/2 -bracket_strut_aligment_pocket_depth]),
-        named_anchor("strut-mount-hole2", [(bracket_width/2-strut_thickness/2), -(strut_mount_hole_dist_to_top+strut_mount_hole_diam/2), bracket_thickness/2 -bracket_strut_aligment_pocket_depth]),
+        named_anchor("strut-mount-hole1", [-(bracket_width/2-strut_thickness/2), -(strut_mount_hole_dist_to_top), bracket_thickness/2 -bracket_strut_aligment_pocket_depth]),
+        named_anchor("strut-mount-hole2", [(bracket_width/2-strut_thickness/2), -(strut_mount_hole_dist_to_top), bracket_thickness/2 -bracket_strut_aligment_pocket_depth]),
     ];
     bottom_triangle_path = [
         [-bracket_width/2, 0],
@@ -30,22 +31,23 @@ module bracket_side(anchor=CENTER, spin=0, orient=UP, caster=false)
         [caster ? -bracket_width/2 : -20/2, -bracket_triangle_height],
     ];
     attachable(spin=spin, orient=orient, anchor=anchor, anchors=anchor_list) {
+        color_this("brown")
         diff("bolt-hole axle-hole nut-access strut-alignment-pocket strut-mount-holes")
         cube([bracket_width, bracket_square_height, bracket_thickness], anchor=BACK) {
             position(FRONT)
             // rounded_prism(trapezoid(h=bracket_triangle_height, w1=bracket_width, w2=20), height=bracket_thickness, anchor=FRONT, spin=180, joint_sides=[0, 0, 8, 8])
-            rounded_prism(bottom_triangle_path, height=bracket_thickness, joint_sides=[0, 0, 8, 8])
-                tag("axle-hole") {
-                    if (caster) {
-                        position(LEFT+FRONT)
-                        translate([bracket_width/2+axle_x_offset, 20, 0])
-                        cyl(h=bracket_thickness+1, d=axle_diam+1, anchor=CENTER);
-                    } else {
-                        position(FRONT)
-                        translate([0, 20, 0])
-                        cyl(h=bracket_thickness+1, d=axle_diam+1);
-                    }
+            color_this("brown") rounded_prism(bottom_triangle_path, height=bracket_thickness, joint_sides=[0, 0, 8, 8]);
+            tag("axle-hole") {
+                if (caster) {
+                    position(FRONT)
+                    translate([axle_x_offset_caster(caster), -(bracket_triangle_height-20), 0])
+                    cyl(h=bracket_thickness+1, d=axle_diam+1, anchor=CENTER);
+                } else {
+                    position(FRONT)
+                    translate([0, -(bracket_triangle_height-20), 0])
+                    cyl(h=bracket_thickness+1, d=axle_diam+1);
                 }
+            }
             tag("bolt-hole") {
                 for(i=[-1,1]) {
                     position(BACK)
@@ -84,10 +86,11 @@ module bracket_side(anchor=CENTER, spin=0, orient=UP, caster=false)
 module bracket_strut(anchor=CENTER, spin=0, orient=UP, chain_port=false, caster=false)
 {
     anchor_list = [
-        named_anchor("mount-hole1", [-strut_width()/2, strut_height/2-strut_mount_hole_dist_to_top-strut_mount_hole_diam/2, 0], orient=LEFT),
-        named_anchor("mount-hole2", [strut_width()/2, strut_height/2-strut_mount_hole_dist_to_top-strut_mount_hole_diam/2, 0], orient=RIGHT),
+        named_anchor("mount-hole1", [-strut_width()/2, strut_height/2-strut_mount_hole_dist_to_top, 0], orient=LEFT),
+        named_anchor("mount-hole2", [strut_width()/2, strut_height/2-strut_mount_hole_dist_to_top, 0], orient=RIGHT),
     ];
     attachable(anchor=anchor, spin=spin, orient=orient, size=[strut_width(), strut_height, strut_thickness], anchors=anchor_list) {
+        color_this("brown")
         diff("mount-holes wheel-cutout chain-port")
         cube([strut_width(), strut_height, strut_thickness], anchor=CENTER) {
             tag("wheel-cutout") {
@@ -97,7 +100,7 @@ module bracket_strut(anchor=CENTER, spin=0, orient=UP, chain_port=false, caster=
                 if (caster)
                 {
                     position(BACK)
-                    translate([wheel_bracket_centers_offset, -10, 0])
+                    translate([wheel_bracket_centers_offset(), -10, 0])
                     cyl(l=wheel_thickness+2, d=wheel_diam, rounding=20, anchor=BACK, orient=RIGHT);
                 }
             }
@@ -148,7 +151,7 @@ module top_plate(anchor=CENTER, spin=0, orient=UP) {
         named_anchor("wheel-mount-holes-center", [wheel_mount_hole_offset[0], wheel_mount_hole_offset[1], -top_plate_size()[2]/2]),
     ];
     attachable(anchor=anchor, spin=spin,orient=orient, size=top_plate_size(), anchors=anchor_list) {
-        difference() {
+        color_this("brown") difference() {
             translate([0,0,-top_plate_size()[2]/2])
             offset_sweep(plate_shape, height=top_plate_size()[2]);
                 for (i=[0:3]) {
@@ -187,7 +190,7 @@ module motor_top_plate(anchor=CENTER, spin=0, orient=UP, slotspread=10, motor_mo
     ];
     // stroke(plate_shape, endcap2="arrow");
     attachable(anchor=anchor, spin=spin, orient=UP, size=[top_plate_size()[0], motor_top_plate_height, top_plate_size()[2]], anchors=anchor_list) {
-        difference() {
+        color_this("brown") difference() {
             translate([0, 0, -top_plate_size()[2]/2])
             offset_sweep(plate_shape, height=top_plate_size()[2]);
             for (i=[0:3]) {

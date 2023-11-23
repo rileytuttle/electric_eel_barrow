@@ -1,6 +1,6 @@
 include <BOSL2/screws.scad>
 include <BOSL2/std.scad>
-include <rosetta-stone/board.scad>
+include <rosetta-stone/boards.scad>
 include <rosetta-stone/std.scad>
 
 // rpi values
@@ -33,7 +33,7 @@ $fn=10;
 
 board_float = 10;
 
-module build_main_platform(anchor=CENTER, spin=0, orient=UP) {
+module build_main_platform(anchor=CENTER, spin=0, orient=UP, show_boards=false) {
     rpi_board_position = [40, 40+rpi_mount_hole_offset, 0];
     motor_controller_position = [0,-60,0];
     regulator_position = [-30, 40+regulator_mount_hole_v_offset_from_center, 0];
@@ -59,16 +59,18 @@ module build_main_platform(anchor=CENTER, spin=0, orient=UP) {
             standoffs4(rpi_mount_hole_spacing, 5, 10, anchor=BOTTOM, rounding=-2) {
             tag("rpi-mount-holes")
             position(TOP)
-            mount_threads4(rpi_mount_spec, rpi_mount_hole_spacing, anchor=TOP);
+            mount_threads4(rpi_mount_spec, [rpi_mount_hole_spacing[0], rpi_mount_hole_spacing[1], 5], anchor=TOP);
             //rpi
-            position("standoff1")
-            translate([0,0,board_float])
-            color_this("blue") simulated_4_hole_board(
-                size=rpi_size,
-                mount_hole_spacing=rpi_mount_hole_spacing,
-                mount_hole_diam=rpi_mount_hole_diam,
-                mount_hole_offset=[0, rpi_mount_hole_offset],
-                anchor="mount_hole1");
+            if (show_boards) {
+                position("standoff1")
+                translate([0,0,board_float])
+                color_this("blue") simulated_4_hole_board(
+                    size=rpi_size,
+                    mount_hole_spacing=rpi_mount_hole_spacing,
+                    mount_hole_diam=rpi_mount_hole_diam,
+                    mount_hole_offset=[0, rpi_mount_hole_offset],
+                    anchor="mount_hole1");
+                }
             }
 
             // motor controller standoffs and mount holes
@@ -77,15 +79,17 @@ module build_main_platform(anchor=CENTER, spin=0, orient=UP) {
             standoffs4(motor_driver_mount_hole_spacing, 5,10, anchor=BOTTOM, rounding=-2) {
             tag("motor-controller-mount-holes")
             position(TOP)
-            mount_threads4(motor_driver_mount_spec, motor_driver_mount_hole_spacing, anchor=TOP);
+            mount_threads4(motor_driver_mount_spec, [motor_driver_mount_hole_spacing[0], motor_driver_mount_hole_spacing[1], 5], anchor=TOP);
             // motor controller
-            position("standoff1")
-            translate([0, 0, board_float])
-            color_this("red") simulated_4_hole_board(
-                size=motor_driver_size,
-                mount_hole_spacing=motor_driver_mount_hole_spacing,
-                mount_hole_diam=motor_driver_mount_hole_diam,
-                anchor="mount_hole1");
+            if (show_boards) {
+                position("standoff1")
+                translate([0, 0, board_float])
+                color_this("red") simulated_4_hole_board(
+                    size=motor_driver_size,
+                    mount_hole_spacing=motor_driver_mount_hole_spacing,
+                    mount_hole_diam=motor_driver_mount_hole_diam,
+                    anchor="mount_hole1");
+                }
             }
 
             // regulator standoffs and mount holes
@@ -100,16 +104,18 @@ module build_main_platform(anchor=CENTER, spin=0, orient=UP) {
                 rounding=-2) {
             tag("regulator-mount-holes")
             position(TOP)
-            mount_threads4(regulator_mount_spec, regulator_mount_hole_spacing, anchor=TOP, mount_hole_mask=[1, 0, 0, 1]);
+            mount_threads4(regulator_mount_spec, [regulator_mount_hole_spacing[0], regulator_mount_hole_spacing[1], 5], anchor=TOP, mount_hole_mask=[1, 0, 0, 1]);
             // regulator
-            position("standoff1")
-            translate([0, 0, board_float])
-            color_this("green") simulated_4_hole_board(
-                size=regulator_size,
-                mount_hole_spacing=regulator_mount_hole_spacing,
-                mount_hole_offset=[0,regulator_mount_hole_v_offset_from_center],
-                hole_mask=[1,0,0,1],
-                anchor="mount_hole1");
+            if (show_boards) {
+                position("standoff1")
+                translate([0, 0, board_float])
+                color_this("green") simulated_4_hole_board(
+                    size=regulator_size,
+                    mount_hole_spacing=regulator_mount_hole_spacing,
+                    mount_hole_offset=[0,regulator_mount_hole_v_offset_from_center],
+                    hole_mask=[1,0,0,1],
+                    anchor="mount_hole1");
+                }
             }
             // handle mount holes
             // tag("handle-mount-holes")

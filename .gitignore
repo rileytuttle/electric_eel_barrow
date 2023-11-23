@@ -1,3 +1,5 @@
 logs/*
 bin/*
 __pycache__/*
+**/*.stl
+**/*.gcode

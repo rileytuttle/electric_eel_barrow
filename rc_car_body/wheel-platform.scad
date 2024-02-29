@@ -181,9 +181,12 @@ module alignment_tool() {
     
     difference() {
         hull()
-        zrot_copies(n=3, sa=0, r=gear_data[4][1]) cyl(d=8, l=height, anchor=CENTER);
+        // zrot_copies(n=3, sa=0, r=gear_data[4][1]) cyl(d=8, l=height, anchor=CENTER);
+        move_copies(gear_data[2][4]) cyl(d=8, l=height, anchor=CENTER);
         scale([0.6, 0.6, 1]) hull() zrot_copies(n=3, sa=0, r=gear_data[4][1]) cyl(d=10, l=height, anchor=CENTER);
-        zrot_copies(n=3, sa=0, r=gear_data[4][1]) screw_hole("M3x0.5", thread=true, l=5);
+        move_copies(gear_data[2][4]) screw_hole("M3x0.5", thread=true, l=5);
+        
+        // zrot_copies(n=3, sa=0, r=gear_data[4][1]) screw_hole("M3x0.5", thread=true, l=5);
     }
 }
 
@@ -263,8 +266,11 @@ module wheel_mount(show_gearset=false, spin=0, orient=UP, anchor=CENTER, platfor
                 tag("mount-holes") screw_hole("M3x0.5", head="socket", l=wheel_mount_thickness+1, thread=false, anchor=TOP);
                 position(TOP)
                 rotate([0,0,30])
-                tag("mount-holes") zrot_copies(n=3, sa=0, r=gear_data[4][1])
+                move_copies(gear_data[2][4]) {
+                    tag("mount-holes")
+                    
                     screw_hole("M3x0.5", l=10, thread=true, anchor=TOP);
+                }
                 if (show_gearset) {
                     position(TOP)
                     gearset(anchor=BOTTOM);
@@ -354,9 +360,9 @@ module build_wheel_platform(spin=0, orient=UP, anchor=CENTER) {
 // platform();
 
 // test_build_gears();
-// wheel_mount(platform_mount_right=false);
+wheel_mount(show_gearset=true, platform_mount_right=false);
 // gearset();
-ring_gear_wheel();
+// ring_gear_wheel();
 // planet_gear(helical=-helical_ang);
 // gear_chamf();
 // alignment_tool();
